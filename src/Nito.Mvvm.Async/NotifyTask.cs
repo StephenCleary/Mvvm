@@ -28,6 +28,9 @@ namespace Nito.Mvvm
             {
                 await task;
             }
+            catch
+            {
+            }
             finally
             {
                 NotifyProperties(task);
@@ -192,6 +195,9 @@ namespace Nito.Mvvm
             try
             {
                 await task;
+            }
+            catch
+            {
             }
             finally
             {

@@ -10,6 +10,10 @@ namespace Nito.Mvvm
     /// </summary>
     public interface IAsyncCommand : ICommand
     {
+        /// <summary>
+        /// Executes the asynchronous command.
+        /// </summary>
+        /// <param name="parameter">The parameter for the command.</param>
         Task ExecuteAsync(object parameter);
     }
 
@@ -61,22 +65,29 @@ namespace Nito.Mvvm
     }
 
     /// <summary>
-    /// A basic asynchronous command, which is disabled while the command is executing.
+    /// A basic asynchronous command, which (by default) is disabled while the command is executing.
     /// </summary>
     public sealed class AsyncCommand : AsyncCommandBase, INotifyPropertyChanged
     {
         /// <summary>
         /// The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.
         /// </summary>
-        private readonly Func<object, Task> _func;
+        private readonly Func<object, Task> _executeAsync;
+
+        /// <summary>
+        /// The implementation of <see cref="ICommand.CanExecute(object)"/>. May be <c>null</c>.
+        /// </summary>
+        private readonly Func<object, bool> _canExecute;
 
         /// <summary>
         /// Creates a new asynchronous command, with the specified asynchronous delegate as its implementation.
         /// </summary>
-        /// <param name="func">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
-        public AsyncCommand(Func<object, Task> func)
+        /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
+        /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
+        public AsyncCommand(Func<object, Task> executeAsync, Func<object, bool> canExecute = null)
         {
-            _func = func;
+            _executeAsync = executeAsync;
+            _canExecute = canExecute;
         }
 
         /// <summary>
@@ -103,7 +114,9 @@ namespace Nito.Mvvm
         /// <param name="parameter">The parameter for the command.</param>
         public override async Task ExecuteAsync(object parameter)
         {
-            Execution = NotifyTask.Create(_func(parameter));
+            Execution = NotifyTask.Create(_executeAsync(parameter));
+            if (_canExecute == null)
+                base.OnCanExecuteChanged();
             var propertyChanged = PropertyChanged;
             if (propertyChanged != null)
             {
@@ -111,6 +124,8 @@ namespace Nito.Mvvm
                 propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
             }
             await Execution.TaskCompleted;
+            if (_canExecute == null)
+                base.OnCanExecuteChanged();
             propertyChanged = PropertyChanged;
             if (propertyChanged != null)
                 propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
@@ -123,7 +138,17 @@ namespace Nito.Mvvm
 
         protected override bool CanExecute(object parameter)
         {
-            return !IsExecuting;
+            if (_canExecute == null)
+                return !IsExecuting;
+            return _canExecute(parameter);
+        }
+
+        /// <summary>
+        /// Raises <see cref="ICommand.CanExecuteChanged"/>. Call this if you supply a delegate for the <see cref="ICommand.CanExecute(object)"/> implementation.
+        /// </summary>
+        public new void OnCanExecuteChanged()
+        {
+            base.OnCanExecuteChanged();
         }
     }
 }
