@@ -1,30 +1,25 @@
 ﻿{
-    "version": "1.0.0-*",
-    "dependencies": {
-        "Nito.Mvvm.Async": "",
-        "xunit": "2.0.0.0-rc3-build2880",
-        "xunit.runner.aspnet": "2.0.0.0-rc3-build52",
-        "OpenCover": "4.5.3809-rc94",
-        "coveralls.io": "1.3.2.0",
-        "ReportGenerator": "2.1.4.0",
-        "System.Linq": "4.0.0.0-beta-22605",
-        "System.Linq.Expressions": "4.0.0.0-beta-22605"
-    },
+  "version": "1.0.0-*",
+  "dependencies": {
+    "Nito.Mvvm.Async": "",
+    "xunit": "2.1.0",
+    "xunit.runner.dnx": "2.1.0-rc1-build204",
+    "ReportGenerator": "2.4.4",
+    "coveralls.io": "1.3.4",
+    "OpenCover": "4.6.519",
+    "System.Linq": "4.0.1-beta-23516",
+    "System.Linq.Expressions": "4.0.11-beta-23516",
+    "System.Runtime": "4.0.21-beta-23516"
+  },
 
-    "commands": {
-        "test": "xunit.runner.aspnet"
-    },
+  "commands": {
+    "test": "xunit.runner.dnx"
+  },
 
-    "frameworks": {
-        "net46": {
-            "dependencies": {
-                "System.Runtime": "4.0.20-beta-22523"
-            }
-        },
-        "aspnetcore50": {
-            "dependencies": {
-                "System.Runtime": "4.0.20-beta-22523"
-            }
-        }
+  "frameworks": {
+    "dnx46": {
+      "dependencies": {
+      }
     }
+  }
 }

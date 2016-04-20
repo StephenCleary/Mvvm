@@ -6,13 +6,13 @@ environment:
     secure: U8vpVdaIAWQFmqDfHb8nT0aDMUVqVf/w/CMlDVcp1f7zWVqRtNXwwKM/9+SJ/t6A
 install:
 - ps: >-
-    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.ps1'))
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))
 
     $env:Path = "C:\Program Files (x86)\MSBuild\14.0\Bin;" + [Environment]::GetEnvironmentVariables("Machine")["Path"] + ";" + [Environment]::GetEnvironmentVariables("User")["Path"]
 
-    kvm upgrade
+    dnvm install 1.0.0-rc1-update2
 before_build:
-- ps: kpm restore
+- ps: dnu restore
 build:
   verbosity: minimal
 test_script:
