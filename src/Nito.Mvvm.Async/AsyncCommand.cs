@@ -27,6 +27,11 @@ namespace Nito.Mvvm
         /// </summary>
         private readonly WeakCanExecuteChanged _canExecuteChanged;
 
+        protected AsyncCommandBase()
+        {
+            _canExecuteChanged = new WeakCanExecuteChanged(this);
+        }
+
         /// <summary>
         /// Executes the command asynchronously.
         /// </summary>

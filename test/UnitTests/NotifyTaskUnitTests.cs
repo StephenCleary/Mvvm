@@ -17,15 +17,15 @@ namespace UnitTests
         {
             var tcs = new TaskCompletionSource<object>();
             var notifier = NotifyTask.Create(() => (Task)tcs.Task);
-            var taskNotification = PropertyNotified(notifier, n => n.Task);
-            var statusNotification = PropertyNotified(notifier, n => n.Status);
-            var isCompletedNotification = PropertyNotified(notifier, n => n.IsCompleted);
-            var isSuccessfullyCompletedNotification = PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
-            var isCanceledNotification = PropertyNotified(notifier, n => n.IsCanceled);
-            var isFaultedNotification = PropertyNotified(notifier, n => n.IsFaulted);
-            var exceptionNotification = PropertyNotified(notifier, n => n.Exception);
-            var innerExceptionNotification = PropertyNotified(notifier, n => n.InnerException);
-            var errorMessageNotification = PropertyNotified(notifier, n => n.ErrorMessage);
+            var taskNotification = TestUtils.PropertyNotified(notifier, n => n.Task);
+            var statusNotification = TestUtils.PropertyNotified(notifier, n => n.Status);
+            var isCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsCompleted);
+            var isSuccessfullyCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
+            var isCanceledNotification = TestUtils.PropertyNotified(notifier, n => n.IsCanceled);
+            var isFaultedNotification = TestUtils.PropertyNotified(notifier, n => n.IsFaulted);
+            var exceptionNotification = TestUtils.PropertyNotified(notifier, n => n.Exception);
+            var innerExceptionNotification = TestUtils.PropertyNotified(notifier, n => n.InnerException);
+            var errorMessageNotification = TestUtils.PropertyNotified(notifier, n => n.ErrorMessage);
 
             Assert.Same(tcs.Task, notifier.Task);
             Assert.False(notifier.TaskCompleted.IsCompleted);
@@ -69,15 +69,15 @@ namespace UnitTests
         {
             var tcs = new TaskCompletionSource<object>();
             var notifier = NotifyTask.Create(() => (Task)tcs.Task);
-            var taskNotification = PropertyNotified(notifier, n => n.Task);
-            var statusNotification = PropertyNotified(notifier, n => n.Status);
-            var isCompletedNotification = PropertyNotified(notifier, n => n.IsCompleted);
-            var isSuccessfullyCompletedNotification = PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
-            var isCanceledNotification = PropertyNotified(notifier, n => n.IsCanceled);
-            var isFaultedNotification = PropertyNotified(notifier, n => n.IsFaulted);
-            var exceptionNotification = PropertyNotified(notifier, n => n.Exception);
-            var innerExceptionNotification = PropertyNotified(notifier, n => n.InnerException);
-            var errorMessageNotification = PropertyNotified(notifier, n => n.ErrorMessage);
+            var taskNotification = TestUtils.PropertyNotified(notifier, n => n.Task);
+            var statusNotification = TestUtils.PropertyNotified(notifier, n => n.Status);
+            var isCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsCompleted);
+            var isSuccessfullyCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
+            var isCanceledNotification = TestUtils.PropertyNotified(notifier, n => n.IsCanceled);
+            var isFaultedNotification = TestUtils.PropertyNotified(notifier, n => n.IsFaulted);
+            var exceptionNotification = TestUtils.PropertyNotified(notifier, n => n.Exception);
+            var innerExceptionNotification = TestUtils.PropertyNotified(notifier, n => n.InnerException);
+            var errorMessageNotification = TestUtils.PropertyNotified(notifier, n => n.ErrorMessage);
 
             Assert.Same(tcs.Task, notifier.Task);
             Assert.False(notifier.TaskCompleted.IsCompleted);
@@ -122,15 +122,15 @@ namespace UnitTests
             var tcs = new TaskCompletionSource<object>();
             var notifier = NotifyTask.Create(() => (Task)tcs.Task);
             var exception = new NotImplementedException(Guid.NewGuid().ToString("N"));
-            var taskNotification = PropertyNotified(notifier, n => n.Task);
-            var statusNotification = PropertyNotified(notifier, n => n.Status);
-            var isCompletedNotification = PropertyNotified(notifier, n => n.IsCompleted);
-            var isSuccessfullyCompletedNotification = PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
-            var isCanceledNotification = PropertyNotified(notifier, n => n.IsCanceled);
-            var isFaultedNotification = PropertyNotified(notifier, n => n.IsFaulted);
-            var exceptionNotification = PropertyNotified(notifier, n => n.Exception);
-            var innerExceptionNotification = PropertyNotified(notifier, n => n.InnerException);
-            var errorMessageNotification = PropertyNotified(notifier, n => n.ErrorMessage);
+            var taskNotification = TestUtils.PropertyNotified(notifier, n => n.Task);
+            var statusNotification = TestUtils.PropertyNotified(notifier, n => n.Status);
+            var isCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsCompleted);
+            var isSuccessfullyCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
+            var isCanceledNotification = TestUtils.PropertyNotified(notifier, n => n.IsCanceled);
+            var isFaultedNotification = TestUtils.PropertyNotified(notifier, n => n.IsFaulted);
+            var exceptionNotification = TestUtils.PropertyNotified(notifier, n => n.Exception);
+            var innerExceptionNotification = TestUtils.PropertyNotified(notifier, n => n.InnerException);
+            var errorMessageNotification = TestUtils.PropertyNotified(notifier, n => n.ErrorMessage);
 
             Assert.Same(tcs.Task, notifier.Task);
             Assert.False(notifier.TaskCompleted.IsCompleted);
@@ -175,16 +175,16 @@ namespace UnitTests
             var tcs = new TaskCompletionSource<object>();
             var notifier = NotifyTask.Create(() => tcs.Task);
             var result = new object();
-            var taskNotification = PropertyNotified(notifier, n => n.Task);
-            var statusNotification = PropertyNotified(notifier, n => n.Status);
-            var isCompletedNotification = PropertyNotified(notifier, n => n.IsCompleted);
-            var isSuccessfullyCompletedNotification = PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
-            var isCanceledNotification = PropertyNotified(notifier, n => n.IsCanceled);
-            var isFaultedNotification = PropertyNotified(notifier, n => n.IsFaulted);
-            var exceptionNotification = PropertyNotified(notifier, n => n.Exception);
-            var innerExceptionNotification = PropertyNotified(notifier, n => n.InnerException);
-            var errorMessageNotification = PropertyNotified(notifier, n => n.ErrorMessage);
-            var resultNotification = PropertyNotified(notifier, n => n.Result);
+            var taskNotification = TestUtils.PropertyNotified(notifier, n => n.Task);
+            var statusNotification = TestUtils.PropertyNotified(notifier, n => n.Status);
+            var isCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsCompleted);
+            var isSuccessfullyCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
+            var isCanceledNotification = TestUtils.PropertyNotified(notifier, n => n.IsCanceled);
+            var isFaultedNotification = TestUtils.PropertyNotified(notifier, n => n.IsFaulted);
+            var exceptionNotification = TestUtils.PropertyNotified(notifier, n => n.Exception);
+            var innerExceptionNotification = TestUtils.PropertyNotified(notifier, n => n.InnerException);
+            var errorMessageNotification = TestUtils.PropertyNotified(notifier, n => n.ErrorMessage);
+            var resultNotification = TestUtils.PropertyNotified(notifier, n => n.Result);
 
             Assert.Same(tcs.Task, notifier.Task);
             Assert.False(notifier.TaskCompleted.IsCompleted);
@@ -231,16 +231,16 @@ namespace UnitTests
         {
             var tcs = new TaskCompletionSource<object>();
             var notifier = NotifyTask.Create(() => tcs.Task);
-            var taskNotification = PropertyNotified(notifier, n => n.Task);
-            var statusNotification = PropertyNotified(notifier, n => n.Status);
-            var isCompletedNotification = PropertyNotified(notifier, n => n.IsCompleted);
-            var isSuccessfullyCompletedNotification = PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
-            var isCanceledNotification = PropertyNotified(notifier, n => n.IsCanceled);
-            var isFaultedNotification = PropertyNotified(notifier, n => n.IsFaulted);
-            var exceptionNotification = PropertyNotified(notifier, n => n.Exception);
-            var innerExceptionNotification = PropertyNotified(notifier, n => n.InnerException);
-            var errorMessageNotification = PropertyNotified(notifier, n => n.ErrorMessage);
-            var resultNotification = PropertyNotified(notifier, n => n.Result);
+            var taskNotification = TestUtils.PropertyNotified(notifier, n => n.Task);
+            var statusNotification = TestUtils.PropertyNotified(notifier, n => n.Status);
+            var isCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsCompleted);
+            var isSuccessfullyCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
+            var isCanceledNotification = TestUtils.PropertyNotified(notifier, n => n.IsCanceled);
+            var isFaultedNotification = TestUtils.PropertyNotified(notifier, n => n.IsFaulted);
+            var exceptionNotification = TestUtils.PropertyNotified(notifier, n => n.Exception);
+            var innerExceptionNotification = TestUtils.PropertyNotified(notifier, n => n.InnerException);
+            var errorMessageNotification = TestUtils.PropertyNotified(notifier, n => n.ErrorMessage);
+            var resultNotification = TestUtils.PropertyNotified(notifier, n => n.Result);
 
             Assert.Same(tcs.Task, notifier.Task);
             Assert.False(notifier.TaskCompleted.IsCompleted);
@@ -288,16 +288,16 @@ namespace UnitTests
             var tcs = new TaskCompletionSource<object>();
             var notifier = NotifyTask.Create(() => tcs.Task);
             var exception = new NotImplementedException(Guid.NewGuid().ToString("N"));
-            var taskNotification = PropertyNotified(notifier, n => n.Task);
-            var statusNotification = PropertyNotified(notifier, n => n.Status);
-            var isCompletedNotification = PropertyNotified(notifier, n => n.IsCompleted);
-            var isSuccessfullyCompletedNotification = PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
-            var isCanceledNotification = PropertyNotified(notifier, n => n.IsCanceled);
-            var isFaultedNotification = PropertyNotified(notifier, n => n.IsFaulted);
-            var exceptionNotification = PropertyNotified(notifier, n => n.Exception);
-            var innerExceptionNotification = PropertyNotified(notifier, n => n.InnerException);
-            var errorMessageNotification = PropertyNotified(notifier, n => n.ErrorMessage);
-            var resultNotification = PropertyNotified(notifier, n => n.Result);
+            var taskNotification = TestUtils.PropertyNotified(notifier, n => n.Task);
+            var statusNotification = TestUtils.PropertyNotified(notifier, n => n.Status);
+            var isCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsCompleted);
+            var isSuccessfullyCompletedNotification = TestUtils.PropertyNotified(notifier, n => n.IsSuccessfullyCompleted);
+            var isCanceledNotification = TestUtils.PropertyNotified(notifier, n => n.IsCanceled);
+            var isFaultedNotification = TestUtils.PropertyNotified(notifier, n => n.IsFaulted);
+            var exceptionNotification = TestUtils.PropertyNotified(notifier, n => n.Exception);
+            var innerExceptionNotification = TestUtils.PropertyNotified(notifier, n => n.InnerException);
+            var errorMessageNotification = TestUtils.PropertyNotified(notifier, n => n.ErrorMessage);
+            var resultNotification = TestUtils.PropertyNotified(notifier, n => n.Result);
 
             Assert.Same(tcs.Task, notifier.Task);
             Assert.False(notifier.TaskCompleted.IsCompleted);
@@ -354,7 +354,7 @@ namespace UnitTests
             var defaultResult = new object();
             var notifier = NotifyTask.Create(() => tcs.Task, defaultResult);
             var result = new object();
-            var resultNotification = PropertyNotified(notifier, n => n.Result);
+            var resultNotification = TestUtils.PropertyNotified(notifier, n => n.Result);
 
             Assert.Same(defaultResult, notifier.Result);
 
@@ -510,21 +510,6 @@ namespace UnitTests
             Assert.NotNull(notifier.Exception);
             Assert.Same(exception, notifier.InnerException);
             Assert.Equal(exception.Message, notifier.ErrorMessage);
-        }
-
-        private static Func<bool> PropertyNotified<T, P>(T obj, Expression<Func<T, P>> prop) where T : INotifyPropertyChanged
-        {
-            var expression = (MemberExpression)prop.Body;
-            string name = expression.Member.Name;
-
-            bool invoked = false;
-            obj.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == name)
-                    invoked = true;
-            };
-
-            return () => invoked;
         }
     }
 }
