@@ -1,26 +1,21 @@
 ﻿{
-  "version": "1.0.0-beta-2",
+  "version": "1.0.0-beta-3",
   "authors": [ "Stephen Cleary" ],
   "description": "Asynchronous helper types for MVVM applications.",
-  "dependencies": {
-    "Nito.Mvvm.Core": "1.0.0-beta-*",
-    "System.ObjectModel": "4.0.11-beta-23516",
-    "System.Runtime": "4.0.21-beta-23516",
-    "System.Threading.Tasks": "4.0.11-beta-23516"
-  },
-
-  "compilationOptions": {
+  "buildOptions": {
     "warningsAsErrors": true
   },
-
   "frameworks": {
-    "net46": {
+    "net45": { },
+    "netstandard1.0": {
       "dependencies": {
-      }
-    },
-    "netcore50": {
-      "dependencies": {
+        "System.ObjectModel": "4.0.12",
+        "System.Runtime": "4.1.0",
+        "System.Threading.Tasks": "4.0.11"
       }
     }
+  },
+  "dependencies": {
+    "Nito.Mvvm.Core": "1.0.0-beta-2"
   }
 }

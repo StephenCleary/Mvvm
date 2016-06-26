@@ -16,10 +16,7 @@ namespace Nito.Mvvm
         private NotifyTask(Task task)
         {
             Task = task;
-            if (task.IsCompleted)
-                TaskCompleted = Task.CompletedTask;
-            else
-                TaskCompleted = MonitorTaskAsync(task);
+            TaskCompleted = MonitorTaskAsync(task);
         }
 
         private async Task MonitorTaskAsync(Task task)
@@ -184,10 +181,7 @@ namespace Nito.Mvvm
         {
             _defaultResult = defaultResult;
             Task = task;
-            if (task.IsCompleted)
-                TaskCompleted = System.Threading.Tasks.Task.CompletedTask;
-            else
-                TaskCompleted = MonitorTaskAsync(task);
+            TaskCompleted = MonitorTaskAsync(task);
         }
 
         private async Task MonitorTaskAsync(Task task)
