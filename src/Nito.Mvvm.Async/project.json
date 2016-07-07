@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-delta-1",
+  "version": "1.0.0-delta-2",
   "authors": [ "Stephen Cleary" ],
   "description": "Asynchronous helper types for MVVM applications.",
   "buildOptions": {
@@ -12,9 +12,16 @@
         "System.Runtime": "4.1.0",
         "System.Threading.Tasks": "4.0.11"
       }
+    },
+    ".NETPortable,Version=v4.5,Profile=Profile259": {
+      "frameworkAssemblies": {
+        "System.ObjectModel": "",
+        "System.Runtime": "",
+        "System.Threading.Tasks": ""
+      }
     }
   },
   "dependencies": {
-    "Nito.Mvvm.Core": "1.0.0-delta-1"
+    "Nito.Mvvm.Core": "1.0.0-delta-2"
   }
 }
