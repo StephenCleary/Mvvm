@@ -27,6 +27,9 @@ namespace Nito.Mvvm
         /// </summary>
         private readonly WeakCanExecuteChanged _canExecuteChanged;
 
+        /// <summary>
+        /// Creates an instance with its own implementation of <see cref="ICommand.CanExecuteChanged"/>.
+        /// </summary>
         protected AsyncCommandBase()
         {
             _canExecuteChanged = new WeakCanExecuteChanged(this);
@@ -141,6 +144,10 @@ namespace Nito.Mvvm
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// The implementation of <see cref="ICommand.CanExecute(object)"/>. If a <c>canExecute</c> delegate was passed to the constructor, then that delegate is invoked; otherwise, returns <c>false</c> whenever the async command is in progress.
+        /// </summary>
+        /// <param name="parameter">The parameter for the command.</param>
         protected override bool CanExecute(object parameter)
         {
             if (_canExecute == null)

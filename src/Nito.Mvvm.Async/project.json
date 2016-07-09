@@ -1,9 +1,10 @@
 ﻿{
-  "version": "1.0.0-delta-2",
+  "version": "1.0.0-delta-3",
   "authors": [ "Stephen Cleary" ],
   "description": "Asynchronous helper types for MVVM applications.",
   "buildOptions": {
-    "warningsAsErrors": true
+    "warningsAsErrors": true,
+    "xmlDoc": true
   },
   "frameworks": {
     "netstandard1.0": {
@@ -22,6 +23,6 @@
     }
   },
   "dependencies": {
-    "Nito.Mvvm.Core": "1.0.0-delta-2"
+    "Nito.Mvvm.Core": "1.0.0-delta-4"
   }
 }

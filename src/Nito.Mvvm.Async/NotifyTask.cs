@@ -177,6 +177,7 @@ namespace Nito.Mvvm
         /// Initializes a task notifier watching the specified task.
         /// </summary>
         /// <param name="task">The task to watch.</param>
+        /// <param name="defaultResult">The value to return from <see cref="Result"/> while the task is not yet complete.</param>
         internal NotifyTask(Task<TResult> task, TResult defaultResult)
         {
             _defaultResult = defaultResult;
