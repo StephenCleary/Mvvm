@@ -1,10 +1,19 @@
 ﻿{
-  "version": "1.0.0-delta-3",
+  "version": "1.0.0-eta-01",
   "authors": [ "Stephen Cleary" ],
   "description": "Asynchronous helper types for MVVM applications.",
   "buildOptions": {
     "warningsAsErrors": true,
     "xmlDoc": true
+  },
+  "packOptions": {
+    "tags": [ "async", "mvvm" ],
+    "projectUrl": "https://github.com/StephenCleary/Mvvm.Async",
+    "licenseUrl": "https://raw.githubusercontent.com/StephenCleary/Mvvm.Async/master/LICENSE",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/StephenCleary/Mvvm.Async.git"
+    }
   },
   "frameworks": {
     "netstandard1.0": {
@@ -16,13 +25,13 @@
     },
     ".NETPortable,Version=v4.5,Profile=Profile259": {
       "frameworkAssemblies": {
-        "System.ObjectModel": "",
-        "System.Runtime": "",
-        "System.Threading.Tasks": ""
+        "System.ObjectModel": { "type": "build" },
+        "System.Runtime": { "type": "build" },
+        "System.Threading.Tasks": { "type": "build" }
       }
     }
   },
   "dependencies": {
-    "Nito.Mvvm.Core": "1.0.0-delta-4"
+    "Nito.Mvvm.Core": "1.0.0-eta-01"
   }
 }
