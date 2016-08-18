@@ -126,17 +126,13 @@ namespace Nito.Mvvm
             if (_canExecute == null)
                 base.OnCanExecuteChanged();
             var propertyChanged = PropertyChanged;
-            if (propertyChanged != null)
-            {
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Execution"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
-            }
+            propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("Execution"));
+            propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
             await Execution.TaskCompleted;
             if (_canExecute == null)
                 base.OnCanExecuteChanged();
-            propertyChanged = PropertyChanged;
-            if (propertyChanged != null)
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
+            PropertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
+            await Execution.Task;
         }
 
         /// <summary>

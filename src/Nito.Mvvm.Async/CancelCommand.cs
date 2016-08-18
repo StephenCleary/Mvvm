@@ -30,12 +30,12 @@ namespace Nito.Mvvm
         /// <summary>
         /// Gets a cancellation token that will be canceled when this command is executed.
         /// </summary>
-        public CancellationToken CancellationToken { get { return _cts.Token; } }
+        public CancellationToken CancellationToken => _cts.Token;
 
         /// <summary>
         /// Gets a value indicating whether the cancel command has been executed. Call <see cref="Reset"/> to reset the command to an uncancelled state.
         /// </summary>
-        public bool IsCancellationRequested { get { return _cts.IsCancellationRequested; } }
+        public bool IsCancellationRequested => _cts.IsCancellationRequested;
 
         /// <summary>
         /// Executes the cancel command.
