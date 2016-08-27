@@ -1,5 +1,7 @@
 ﻿using Nito.Mvvm;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xunit;
 
@@ -8,22 +10,21 @@ namespace UnitTests
     public class CancelCommandUnitTests
     {
         [Fact]
-        public void AfterConstruction_IsNotCanceled()
+        public void AfterConstruction_IsCanceled()
         {
             var command = new CancelCommand();
-            Assert.False(command.CancellationToken.IsCancellationRequested);
-            Assert.False(command.IsCancellationRequested);
-            Assert.True(command.CancellationToken.CanBeCanceled);
-            Assert.True(((ICommand)command).CanExecute(null));
+            Assert.True(command.CancellationToken.IsCancellationRequested);
+            Assert.True(command.IsCancellationRequested);
+            Assert.False(((ICommand)command).CanExecute(null));
         }
 
         [Fact]
-        public void Canceled_EntersCanceledState()
+        public void StartOperation_LeavesCanceledState()
         {
             var command = new CancelCommand();
             var token = command.CancellationToken;
             object observedSender = null;
-            bool observedCanExecute = true;
+            bool observedCanExecute = false;
             EventHandler subscription = (s, _) =>
             {
                 observedSender = s;
@@ -31,14 +32,14 @@ namespace UnitTests
             };
             ((ICommand)command).CanExecuteChanged += subscription;
 
-            command.Cancel();
+            command.StartOperation();
 
             Assert.True(token.IsCancellationRequested);
-            Assert.True(command.CancellationToken.IsCancellationRequested);
-            Assert.True(command.IsCancellationRequested);
-            Assert.False(((ICommand)command).CanExecute(null));
+            Assert.False(command.CancellationToken.IsCancellationRequested);
+            Assert.False(command.IsCancellationRequested);
+            Assert.True(((ICommand)command).CanExecute(null));
             Assert.Same(command, observedSender);
-            Assert.False(observedCanExecute);
+            Assert.True(observedCanExecute);
 
             ((ICommand)command).CanExecuteChanged -= subscription;
         }
@@ -47,6 +48,8 @@ namespace UnitTests
         public void Execute_EntersCanceledState()
         {
             var command = new CancelCommand();
+            command.StartOperation();
+
             var token = command.CancellationToken;
             object observedSender = null;
             bool observedCanExecute = true;
@@ -70,36 +73,11 @@ namespace UnitTests
         }
 
         [Fact]
-        public void Reset_LeavesCanceledState()
+        public void StopOperation_EntersCanceledState()
         {
             var command = new CancelCommand();
-            var token = command.CancellationToken;
-            object observedSender = null;
-            bool observedCanExecute = false;
-            EventHandler subscription = (s, _) =>
-            {
-                observedSender = s;
-                observedCanExecute = ((ICommand)command).CanExecute(null);
-            };
+            var operation = command.StartOperation();
 
-            command.Cancel();
-            ((ICommand)command).CanExecuteChanged += subscription;
-            command.Reset();
-
-            Assert.True(token.IsCancellationRequested);
-            Assert.False(command.CancellationToken.IsCancellationRequested);
-            Assert.False(command.IsCancellationRequested);
-            Assert.True(((ICommand)command).CanExecute(null));
-            Assert.Same(command, observedSender);
-            Assert.True(observedCanExecute);
-
-            ((ICommand)command).CanExecuteChanged -= subscription;
-        }
-
-        [Fact]
-        public void Canceled_InCanceledState_IsNoop()
-        {
-            var command = new CancelCommand();
             var token = command.CancellationToken;
             object observedSender = null;
             bool observedCanExecute = true;
@@ -108,47 +86,60 @@ namespace UnitTests
                 observedSender = s;
                 observedCanExecute = ((ICommand)command).CanExecute(null);
             };
-
-            command.Cancel();
             ((ICommand)command).CanExecuteChanged += subscription;
-            command.Cancel();
+
+            operation.Dispose();
 
             Assert.True(token.IsCancellationRequested);
             Assert.True(command.CancellationToken.IsCancellationRequested);
             Assert.True(command.IsCancellationRequested);
             Assert.False(((ICommand)command).CanExecute(null));
-            Assert.Null(observedSender);
-            Assert.True(observedCanExecute);
+            Assert.Same(command, observedSender);
+            Assert.False(observedCanExecute);
 
             ((ICommand)command).CanExecuteChanged -= subscription;
         }
 
         [Fact]
-        public void Reset_InResetState_IsNoop()
+        public async Task WrapDelegateCancellationToken_WhenCommandIsUncanceled_IsNotCanceled()
         {
             var command = new CancelCommand();
-            var token = command.CancellationToken;
-            object observedSender = null;
-            bool observedCanExecute = false;
-            EventHandler subscription = (s, _) =>
+            var ctTcs = new TaskCompletionSource<CancellationToken>();
+            var continueDelegate = new TaskCompletionSource<object>();
+            var __ = command.WrapDelegate(async (_, token) =>
             {
-                observedSender = s;
-                observedCanExecute = ((ICommand)command).CanExecute(null);
-            };
+                ctTcs.SetResult(token);
+                await continueDelegate.Task;
+            })(null);
 
-            command.Cancel();
-            command.Reset();
-            ((ICommand)command).CanExecuteChanged += subscription;
-            command.Reset();
+            Assert.Equal(command.CancellationToken, await ctTcs.Task);
+            Assert.False(command.CancellationToken.IsCancellationRequested);
+            Assert.False(command.IsCancellationRequested);
 
-            Assert.True(token.IsCancellationRequested);
+            continueDelegate.SetResult(null);
+
+            Assert.True(command.CancellationToken.IsCancellationRequested);
+            Assert.True(command.IsCancellationRequested);
+        }
+
+        [Fact]
+        public void Operations_AreReferenceCounted()
+        {
+            var command = new CancelCommand();
+            var operation1 = command.StartOperation();
+            var operation2 = command.StartOperation();
+
+            operation2.Dispose();
+
             Assert.False(command.CancellationToken.IsCancellationRequested);
             Assert.False(command.IsCancellationRequested);
             Assert.True(((ICommand)command).CanExecute(null));
-            Assert.Null(observedSender);
-            Assert.False(observedCanExecute);
 
-            ((ICommand)command).CanExecuteChanged -= subscription;
+            operation1.Dispose();
+
+            Assert.True(command.CancellationToken.IsCancellationRequested);
+            Assert.True(command.IsCancellationRequested);
+            Assert.False(((ICommand)command).CanExecute(null));
         }
     }
 }

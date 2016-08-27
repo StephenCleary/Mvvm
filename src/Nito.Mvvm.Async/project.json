@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-eta-01",
+  "version": "1.0.0-eta-02",
   "authors": [ "Stephen Cleary" ],
   "description": "Asynchronous helper types for MVVM applications.",
   "buildOptions": {
@@ -32,6 +32,6 @@
     }
   },
   "dependencies": {
-    "Nito.Mvvm.Core": "1.0.0-eta-01"
+    "Nito.Mvvm.Core": "1.1.0"
   }
 }

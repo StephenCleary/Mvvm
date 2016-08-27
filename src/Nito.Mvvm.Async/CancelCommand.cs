@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Nito.Disposables;
 
 namespace Nito.Mvvm
 {
     /// <summary>
-    /// A command that cancels a <see cref="CancellationToken"/> when it is executed.
+    /// A command that cancels a <see cref="CancellationToken"/> when it is executed. "Operations" may be started for this command. This command is canceled whenever there are no operations.
     /// </summary>
     public sealed class CancelCommand : ICommand
     {
@@ -17,13 +19,20 @@ namespace Nito.Mvvm
         /// <summary>
         /// The cancellation token source currently controlled by this command.
         /// </summary>
-        private CancellationTokenSource _cts = new CancellationTokenSource();
+        private CancellationTokenSource _cts;
 
         /// <summary>
-        /// Creates a new cancel command with a new cancellation token. This command is initially enabled, with an uncanceled cancellation token.
+        /// The number of current operations. If this is <c>0</c>, then the command is canceled.
+        /// </summary>
+        private int _count;
+
+        /// <summary>
+        /// Creates a new cancel command.
         /// </summary>
         public CancelCommand()
         {
+            _cts = new CancellationTokenSource();
+            _cts.Cancel();
             _canExecuteChanged = new WeakCanExecuteChanged(this);
         }
 
@@ -33,28 +42,24 @@ namespace Nito.Mvvm
         public CancellationToken CancellationToken => _cts.Token;
 
         /// <summary>
-        /// Gets a value indicating whether the cancel command has been executed. Call <see cref="Reset"/> to reset the command to an uncancelled state.
+        /// Gets a value indicating whether the cancel command has been executed.
         /// </summary>
         public bool IsCancellationRequested => _cts.IsCancellationRequested;
 
         /// <summary>
         /// Executes the cancel command.
         /// </summary>
-        public void Cancel()
+        private void Cancel()
         {
-            if (_cts.IsCancellationRequested)
-                return;
             _cts.Cancel();
             _canExecuteChanged.OnCanExecuteChanged();
         }
 
         /// <summary>
-        /// Resets this cancel command to an uncancelled state. If the cancel command hasn't executed yet, then this method does nothing.
+        /// Resets this cancel command to an uncanceled state.
         /// </summary>
-        public void Reset()
+        private void Reset()
         {
-            if (!_cts.IsCancellationRequested)
-                return;
             _cts = new CancellationTokenSource();
             _canExecuteChanged.OnCanExecuteChanged();
         }
@@ -73,6 +78,58 @@ namespace Nito.Mvvm
         void ICommand.Execute(object parameter)
         {
             Cancel();
+        }
+
+        /// <summary>
+        /// Decrements the count, and cancels the command if the new count is <c>0</c>.
+        /// </summary>
+        private void Signal()
+        {
+            if (--_count == 0)
+                Cancel();
+        }
+
+        /// <summary>
+        /// Increments the count, and resets the command if the old count was <c>0</c>.
+        /// </summary>
+        private void AddRef()
+        {
+            if (_count++ == 0)
+                Reset();
+        }
+
+        /// <summary>
+        /// Associates an operation with the cancelable command. The operation is disassociated when disposed.
+        /// </summary>
+        public IDisposable StartOperation()
+        {
+            return new SignalOnDispose(this);
+        }
+
+        /// <summary>
+        /// Wraps a delegate so that it registers with this cancel command. The delegate is passed the <see cref="CancellationToken"/> of this cancel command.
+        /// </summary>
+        /// <param name="executeAsync">The cancelable delegate.</param>
+        public Func<object, Task> WrapDelegate(Func<object, CancellationToken, Task> executeAsync)
+        {
+            return async parameter =>
+            {
+                using (StartOperation())
+                    await executeAsync(parameter, CancellationToken);
+            };
+        }
+
+        private sealed class SignalOnDispose : SingleDisposable<CancelCommand>
+        {
+            public SignalOnDispose(CancelCommand context) : base(context)
+            {
+                context.AddRef();
+            }
+
+            protected override void Dispose(CancelCommand context)
+            {
+                context.Signal();
+            }
         }
     }
 }
