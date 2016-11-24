@@ -25,7 +25,9 @@ namespace Nito.Mvvm
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
-        public CustomAsyncCommand(Func<object, Task> executeAsync, Func<object, bool> canExecute)
+        /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
+        public CustomAsyncCommand(Func<object, Task> executeAsync, Func<object, bool> canExecute, Func<object, ICanExecuteChanged> canExecuteChangedFactory)
+            : base(canExecuteChangedFactory)
         {
             _executeAsync = executeAsync;
             _canExecute = canExecute;
@@ -36,8 +38,29 @@ namespace Nito.Mvvm
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
+        public CustomAsyncCommand(Func<object, Task> executeAsync, Func<object, bool> canExecute)
+            : this(executeAsync, canExecute, CanExecuteChangedFactories.DefaultCanExecuteChangedFactory)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new asynchronous command, with the specified asynchronous delegate as its implementation.
+        /// </summary>
+        /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
+        /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
+        /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
+        public CustomAsyncCommand(Func<Task> executeAsync, Func<bool> canExecute, Func<object, ICanExecuteChanged> canExecuteChangedFactory)
+            : this(_ => executeAsync(), _ => canExecute(), canExecuteChangedFactory)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new asynchronous command, with the specified asynchronous delegate as its implementation.
+        /// </summary>
+        /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
+        /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
         public CustomAsyncCommand(Func<Task> executeAsync, Func<bool> canExecute)
-            : this(_ => executeAsync(), _ => canExecute())
+            : this(_ => executeAsync(), _ => canExecute(), CanExecuteChangedFactories.DefaultCanExecuteChangedFactory)
         {
         }
 

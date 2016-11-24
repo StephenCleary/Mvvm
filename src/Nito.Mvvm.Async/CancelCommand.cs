@@ -14,7 +14,7 @@ namespace Nito.Mvvm
         /// <summary>
         /// The implementation of <see cref="ICommand.CanExecuteChanged"/>.
         /// </summary>
-        private readonly WeakCanExecuteChanged _canExecuteChanged;
+        private readonly ICanExecuteChanged _canExecuteChanged;
 
         /// <summary>
         /// The cancellation token source currently controlled by this command.
@@ -29,11 +29,20 @@ namespace Nito.Mvvm
         /// <summary>
         /// Creates a new cancel command.
         /// </summary>
-        public CancelCommand()
+        /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
+        public CancelCommand(Func<object, ICanExecuteChanged> canExecuteChangedFactory)
         {
             _cts = new CancellationTokenSource();
             _cts.Cancel();
-            _canExecuteChanged = new WeakCanExecuteChanged(this);
+            _canExecuteChanged = canExecuteChangedFactory(this);
+        }
+
+        /// <summary>
+        /// Creates a new cancel command.
+        /// </summary>
+        public CancelCommand()
+            : this(CanExecuteChangedFactories.DefaultCanExecuteChangedFactory)
+        {
         }
 
         /// <summary>

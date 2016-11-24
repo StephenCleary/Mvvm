@@ -12,14 +12,14 @@ namespace Nito.Mvvm
         /// <summary>
         /// The local implementation of <see cref="ICommand.CanExecuteChanged"/>.
         /// </summary>
-        private readonly WeakCanExecuteChanged _canExecuteChanged;
+        private readonly ICanExecuteChanged _canExecuteChanged;
 
         /// <summary>
         /// Creates an instance with its own implementation of <see cref="ICommand.CanExecuteChanged"/>.
         /// </summary>
-        protected AsyncCommandBase()
+        protected AsyncCommandBase(Func<object, ICanExecuteChanged> canExecuteChangedFactory)
         {
-            _canExecuteChanged = new WeakCanExecuteChanged(this);
+            _canExecuteChanged = canExecuteChangedFactory(this);
         }
 
         /// <summary>

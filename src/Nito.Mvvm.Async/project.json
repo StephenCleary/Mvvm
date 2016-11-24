@@ -32,6 +32,6 @@
     }
   },
   "dependencies": {
-    "Nito.Mvvm.Core": "1.1.0"
+    "Nito.Mvvm.Core": "1.2.0-alpha-03"
   }
 }
