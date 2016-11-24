@@ -128,6 +128,16 @@ namespace Nito.Mvvm
             };
         }
 
+        /// <summary>
+        /// Wraps a delegate so that it registers with this cancel command. The delegate is passed the <see cref="CancellationToken"/> of this cancel command. Any <see cref="OperationCanceledException"/> exceptions raised by the delegate are silently ignored.
+        /// </summary>
+        /// <param name="executeAsync">The cancelable delegate.</param>
+        public Func<Task> WrapDelegate(Func<CancellationToken, Task> executeAsync)
+        {
+            var wrapped = WrapDelegate((_, token) => executeAsync(token));
+            return () => wrapped(null);
+        }
+
         private sealed class SignalOnDispose : SingleDisposable<CancelCommand>
         {
             public SignalOnDispose(CancelCommand context) : base(context)

@@ -99,6 +99,16 @@ namespace Nito.Mvvm
         }
 
         /// <summary>
+        /// Creates a new asynchronous command, with the specified asynchronous delegate as its implementation.
+        /// </summary>
+        /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
+        /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
+        public AsyncCommand(Func<Task> executeAsync, Func<object, bool> canExecute = null)
+            : this(_ => executeAsync(), canExecute)
+        {
+        }
+
+        /// <summary>
         /// Represents the execution of the asynchronous command.
         /// </summary>
         public NotifyTask Execution { get; private set; }
