@@ -6,9 +6,9 @@ using System.Windows.Input;
 namespace Nito.Mvvm
 {
     /// <summary>
-    /// A basic asynchronous command, which (by default) is disabled while the command is executing.
+    /// An asynchronous command where the user determines when it can execute.
     /// </summary>
-    public sealed class AsyncCommand : AsyncCommandBase, INotifyPropertyChanged
+    public sealed class CustomAsyncCommand : AsyncCommandBase
     {
         /// <summary>
         /// The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.
@@ -16,20 +16,28 @@ namespace Nito.Mvvm
         private readonly Func<object, Task> _executeAsync;
 
         /// <summary>
+        /// The implementation of <see cref="ICommand.CanExecute(object)"/>.
+        /// </summary>
+        private readonly Func<object, bool> _canExecute;
+
+        /// <summary>
         /// Creates a new asynchronous command, with the specified asynchronous delegate as its implementation.
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
-        public AsyncCommand(Func<object, Task> executeAsync)
+        /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
+        public CustomAsyncCommand(Func<object, Task> executeAsync, Func<object, bool> canExecute)
         {
             _executeAsync = executeAsync;
+            _canExecute = canExecute;
         }
 
         /// <summary>
         /// Creates a new asynchronous command, with the specified asynchronous delegate as its implementation.
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
-        public AsyncCommand(Func<Task> executeAsync)
-            : this(_ => executeAsync())
+        /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
+        public CustomAsyncCommand(Func<Task> executeAsync, Func<object, bool> canExecute)
+            : this(_ => executeAsync(), canExecute)
         {
         }
 
@@ -52,18 +60,16 @@ namespace Nito.Mvvm
         }
 
         /// <summary>
-        /// Executes the asynchronous command.
+        /// Executes the asynchronous command. Any exceptions from the asynchronous delegate are captured and placed on <see cref="Execution"/>; they are not propagated to the UI loop.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
         public override async Task ExecuteAsync(object parameter)
         {
             Execution = NotifyTask.Create(_executeAsync(parameter));
-            OnCanExecuteChanged();
             var propertyChanged = PropertyChanged;
             propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("Execution"));
             propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
             await Execution.TaskCompleted;
-            OnCanExecuteChanged();
             PropertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
             await Execution.Task;
         }
@@ -74,9 +80,14 @@ namespace Nito.Mvvm
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// The implementation of <see cref="ICommand.CanExecute(object)"/>. Returns <c>false</c> whenever the async command is in progress.
+        /// The implementation of <see cref="ICommand.CanExecute(object)"/>. Invokes the <c>canExecute</c> delegate that was passed to the constructor.
         /// </summary>
         /// <param name="parameter">The parameter for the command.</param>
-        protected override bool CanExecute(object parameter) => !IsExecuting;
+        protected override bool CanExecute(object parameter) => _canExecute(parameter);
+
+        /// <summary>
+        /// Raises <see cref="ICommand.CanExecuteChanged"/>.
+        /// </summary>
+        public new void OnCanExecuteChanged() => base.OnCanExecuteChanged();
     }
 }
