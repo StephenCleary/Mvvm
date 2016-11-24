@@ -8,7 +8,7 @@ namespace Nito.Mvvm
     /// <summary>
     /// An asynchronous command where the user determines when it can execute.
     /// </summary>
-    public sealed class CustomAsyncCommand : AsyncCommandBase
+    public sealed class CustomAsyncCommand : AsyncCommandBase, INotifyPropertyChanged
     {
         /// <summary>
         /// The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.
@@ -36,8 +36,8 @@ namespace Nito.Mvvm
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
-        public CustomAsyncCommand(Func<Task> executeAsync, Func<object, bool> canExecute)
-            : this(_ => executeAsync(), canExecute)
+        public CustomAsyncCommand(Func<Task> executeAsync, Func<bool> canExecute)
+            : this(_ => executeAsync(), _ => canExecute())
         {
         }
 
