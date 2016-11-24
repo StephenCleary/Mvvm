@@ -45,6 +45,29 @@ namespace UnitTests
         }
 
         [Fact]
+        public void Execute_DelaysExecutionUntilCommandIsInExecutingState()
+        {
+            bool isExecuting = false;
+            NotifyTask execution = null;
+            bool canExecute = true;
+
+            AsyncCommand command = null;
+            command = new AsyncCommand(() =>
+            {
+                isExecuting = command.IsExecuting;
+                execution = command.Execution;
+                canExecute = ((ICommand) command).CanExecute(null);
+                return Task.FromResult(0);
+            });
+
+            ((ICommand)command).Execute(null);
+
+            Assert.True(isExecuting);
+            Assert.NotNull(execution);
+            Assert.False(canExecute);
+        }
+
+        [Fact]
         public void StartExecution_NotifiesPropertyChanges()
         {
             var signal = new TaskCompletionSource<object>();

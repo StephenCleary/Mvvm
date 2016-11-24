@@ -65,10 +65,12 @@ namespace Nito.Mvvm
         /// <param name="parameter">The parameter for the command.</param>
         public override async Task ExecuteAsync(object parameter)
         {
-            Execution = NotifyTask.Create(_executeAsync(parameter));
+            var tcs = new TaskCompletionSource<object>();
+            Execution = NotifyTask.Create(DoExecuteAsync(tcs.Task, _executeAsync, parameter));
             var propertyChanged = PropertyChanged;
             propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("Execution"));
             propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
+            tcs.SetResult(null);
             await Execution.TaskCompleted;
             PropertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
             await Execution.Task;
@@ -89,5 +91,11 @@ namespace Nito.Mvvm
         /// Raises <see cref="ICommand.CanExecuteChanged"/>.
         /// </summary>
         public new void OnCanExecuteChanged() => base.OnCanExecuteChanged();
+
+        private static async Task DoExecuteAsync(Task precondition, Func<object, Task> executeAsync, object parameter)
+        {
+            await precondition;
+            await executeAsync(parameter);
+        }
     }
 }
