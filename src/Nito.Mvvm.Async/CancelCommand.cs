@@ -107,7 +107,7 @@ namespace Nito.Mvvm
         }
 
         /// <summary>
-        /// Wraps a delegate so that it registers with this cancel command. The delegate is passed the <see cref="CancellationToken"/> of this cancel command.
+        /// Wraps a delegate so that it registers with this cancel command. The delegate is passed the <see cref="CancellationToken"/> of this cancel command. Any <see cref="OperationCanceledException"/> exceptions raised by the delegate are silently ignored.
         /// </summary>
         /// <param name="executeAsync">The cancelable delegate.</param>
         public Func<object, Task> WrapDelegate(Func<object, CancellationToken, Task> executeAsync)
@@ -115,7 +115,16 @@ namespace Nito.Mvvm
             return async parameter =>
             {
                 using (StartOperation())
-                    await executeAsync(parameter, CancellationToken);
+                {
+                    try
+                    {
+                        await executeAsync(parameter, CancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // We cannot use `when (ex.CancellationToken == cancellationToken)` on the catch block because the user delegate may be cancelled by a linked CancellationToken.
+                    }
+                }
             };
         }
 
