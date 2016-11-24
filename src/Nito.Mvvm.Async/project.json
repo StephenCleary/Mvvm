@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-eta-04",
+  "version": "1.0.0-eta-05",
   "authors": [ "Stephen Cleary" ],
   "description": "Asynchronous helper types for MVVM applications.",
   "buildOptions": {
