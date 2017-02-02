@@ -13,16 +13,14 @@ namespace UnitTests
         public void AfterConstruction_IsCanceled()
         {
             var command = new CancelCommand();
-            Assert.True(command.CancellationToken.IsCancellationRequested);
-            Assert.True(command.IsCancellationRequested);
             Assert.False(((ICommand)command).CanExecute(null));
         }
 
         [Fact]
-        public void StartOperation_LeavesCanceledState()
+        public async Task Wrap_LeavesCanceledState()
         {
             var command = new CancelCommand();
-            var token = command.CancellationToken;
+            var observedCancellationToken = new CancellationToken();
             object observedSender = null;
             bool observedCanExecute = false;
             EventHandler subscription = (s, _) =>
@@ -31,54 +29,68 @@ namespace UnitTests
                 observedCanExecute = ((ICommand)command).CanExecute(null);
             };
             ((ICommand)command).CanExecuteChanged += subscription;
+            var ready = new TaskCompletionSource<object>();
+            var release = new TaskCompletionSource<object>();
 
-            command.StartOperation();
+            var task = command.WrapDelegate(async token =>
+            {
+                observedCancellationToken = token;
+                ready.SetResult(null);
+                await release.Task;
+            })();
+            await ready.Task;
 
-            Assert.True(token.IsCancellationRequested);
-            Assert.False(command.CancellationToken.IsCancellationRequested);
-            Assert.False(command.IsCancellationRequested);
+            Assert.False(observedCancellationToken.IsCancellationRequested);
             Assert.True(((ICommand)command).CanExecute(null));
             Assert.Same(command, observedSender);
             Assert.True(observedCanExecute);
 
             ((ICommand)command).CanExecuteChanged -= subscription;
+            release.SetResult(null);
+            await task;
         }
 
         [Fact]
-        public void Execute_EntersCanceledState()
+        public async Task Execute_EntersCanceledState()
         {
             var command = new CancelCommand();
-            command.StartOperation();
-
-            var token = command.CancellationToken;
+            var observedCancellationToken = new CancellationToken();
             object observedSender = null;
-            bool observedCanExecute = true;
+            bool observedCanExecute = false;
             EventHandler subscription = (s, _) =>
             {
                 observedSender = s;
                 observedCanExecute = ((ICommand)command).CanExecute(null);
             };
+            var ready = new TaskCompletionSource<object>();
+            var release = new TaskCompletionSource<object>();
+
+            var task = command.WrapDelegate(async token =>
+            {
+                observedCancellationToken = token;
+                ready.SetResult(null);
+                await release.Task;
+            })();
+            await ready.Task;
             ((ICommand)command).CanExecuteChanged += subscription;
 
             ((ICommand)command).Execute(null);
 
-            Assert.True(token.IsCancellationRequested);
-            Assert.True(command.CancellationToken.IsCancellationRequested);
-            Assert.True(command.IsCancellationRequested);
+            Assert.True(observedCancellationToken.IsCancellationRequested);
             Assert.False(((ICommand)command).CanExecute(null));
             Assert.Same(command, observedSender);
             Assert.False(observedCanExecute);
 
             ((ICommand)command).CanExecuteChanged -= subscription;
+            release.SetResult(null);
+            await task;
         }
 
         [Fact]
-        public void StopOperation_EntersCanceledState()
+        public async Task WrappedDelegateCompleted_EntersCanceledState()
         {
             var command = new CancelCommand();
-            var operation = command.StartOperation();
-
-            var token = command.CancellationToken;
+            var observedCancellationToken = new CancellationToken();
             object observedSender = null;
             bool observedCanExecute = true;
             EventHandler subscription = (s, _) =>
@@ -86,13 +98,22 @@ namespace UnitTests
                 observedSender = s;
                 observedCanExecute = ((ICommand)command).CanExecute(null);
             };
+            var ready = new TaskCompletionSource<object>();
+            var release = new TaskCompletionSource<object>();
+
+            var task = command.WrapDelegate(async token =>
+            {
+                observedCancellationToken = token;
+                ready.SetResult(null);
+                await release.Task;
+            })();
+            await ready.Task;
             ((ICommand)command).CanExecuteChanged += subscription;
 
-            operation.Dispose();
+            release.SetResult(null);
+            await task;
 
-            Assert.True(token.IsCancellationRequested);
-            Assert.True(command.CancellationToken.IsCancellationRequested);
-            Assert.True(command.IsCancellationRequested);
+            Assert.True(observedCancellationToken.IsCancellationRequested);
             Assert.False(((ICommand)command).CanExecute(null));
             Assert.Same(command, observedSender);
             Assert.False(observedCanExecute);
@@ -101,44 +122,41 @@ namespace UnitTests
         }
 
         [Fact]
-        public async Task WrapDelegateCancellationToken_WhenCommandIsUncanceled_IsNotCanceled()
+        public async Task Operations_AreReferenceCounted()
         {
             var command = new CancelCommand();
-            var ctTcs = new TaskCompletionSource<CancellationToken>();
-            var continueDelegate = new TaskCompletionSource<object>();
-            var __ = command.WrapDelegate(async (_, token) =>
+            var observedCancellationToken1 = new CancellationToken();
+            var ready1 = new TaskCompletionSource<object>();
+            var release1 = new TaskCompletionSource<object>();
+            var observedCancellationToken2 = new CancellationToken();
+            var ready2 = new TaskCompletionSource<object>();
+            var release2 = new TaskCompletionSource<object>();
+
+            var task1 = command.WrapDelegate(async token =>
             {
-                ctTcs.SetResult(token);
-                await continueDelegate.Task;
-            })(null);
+                observedCancellationToken1 = token;
+                ready1.SetResult(null);
+                await release1.Task;
+            })();
+            var task2 = command.WrapDelegate(async token =>
+            {
+                observedCancellationToken2 = token;
+                ready2.SetResult(null);
+                await release2.Task;
+            })();
+            await Task.WhenAll(ready1.Task, ready2.Task);
 
-            Assert.Equal(command.CancellationToken, await ctTcs.Task);
-            Assert.False(command.CancellationToken.IsCancellationRequested);
-            Assert.False(command.IsCancellationRequested);
+            release2.SetResult(null);
+            await task2;
 
-            continueDelegate.SetResult(null);
-
-            Assert.True(command.CancellationToken.IsCancellationRequested);
-            Assert.True(command.IsCancellationRequested);
-        }
-
-        [Fact]
-        public void Operations_AreReferenceCounted()
-        {
-            var command = new CancelCommand();
-            var operation1 = command.StartOperation();
-            var operation2 = command.StartOperation();
-
-            operation2.Dispose();
-
-            Assert.False(command.CancellationToken.IsCancellationRequested);
-            Assert.False(command.IsCancellationRequested);
+            Assert.True(observedCancellationToken1 == observedCancellationToken2);
+            Assert.False(observedCancellationToken1.IsCancellationRequested);
             Assert.True(((ICommand)command).CanExecute(null));
 
-            operation1.Dispose();
+            release1.SetResult(null);
+            await task1;
 
-            Assert.True(command.CancellationToken.IsCancellationRequested);
-            Assert.True(command.IsCancellationRequested);
+            Assert.True(observedCancellationToken1.IsCancellationRequested);
             Assert.False(((ICommand)command).CanExecute(null));
         }
     }

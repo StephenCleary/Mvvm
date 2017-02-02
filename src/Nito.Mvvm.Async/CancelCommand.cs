@@ -17,14 +17,9 @@ namespace Nito.Mvvm
         private readonly ICanExecuteChanged _canExecuteChanged;
 
         /// <summary>
-        /// The cancellation token source currently controlled by this command.
+        /// The cancellation token source currently controlled by this command. This is <c>null</c> when the current context has been cancelled.
         /// </summary>
-        private CancellationTokenSource _cts;
-
-        /// <summary>
-        /// The number of current operations. If this is <c>0</c>, then the command is canceled.
-        /// </summary>
-        private int _count;
+        private RefCountedCancellationTokenSource _context;
 
         /// <summary>
         /// Creates a new cancel command.
@@ -32,8 +27,6 @@ namespace Nito.Mvvm
         /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
         public CancelCommand(Func<object, ICanExecuteChanged> canExecuteChangedFactory)
         {
-            _cts = new CancellationTokenSource();
-            _cts.Cancel();
             _canExecuteChanged = canExecuteChangedFactory(this);
         }
 
@@ -45,34 +38,6 @@ namespace Nito.Mvvm
         {
         }
 
-        /// <summary>
-        /// Gets a cancellation token that will be canceled when this command is executed.
-        /// </summary>
-        public CancellationToken CancellationToken => _cts.Token;
-
-        /// <summary>
-        /// Gets a value indicating whether the cancel command has been executed.
-        /// </summary>
-        public bool IsCancellationRequested => _cts.IsCancellationRequested;
-
-        /// <summary>
-        /// Executes the cancel command.
-        /// </summary>
-        private void Cancel()
-        {
-            _cts.Cancel();
-            _canExecuteChanged.OnCanExecuteChanged();
-        }
-
-        /// <summary>
-        /// Resets this cancel command to an uncanceled state.
-        /// </summary>
-        private void Reset()
-        {
-            _cts = new CancellationTokenSource();
-            _canExecuteChanged.OnCanExecuteChanged();
-        }
-
         event EventHandler ICommand.CanExecuteChanged
         {
             add { _canExecuteChanged.CanExecuteChanged += value; }
@@ -81,38 +46,34 @@ namespace Nito.Mvvm
 
         bool ICommand.CanExecute(object parameter)
         {
-            return !IsCancellationRequested;
+            return _context != null;
         }
 
         void ICommand.Execute(object parameter)
         {
-            Cancel();
+            _context.Cancel();
+        }
+
+        private IDisposable StartOperation()
+        {
+            if (_context == null)
+            {
+                _context = new RefCountedCancellationTokenSource(this);
+                _canExecuteChanged.OnCanExecuteChanged();
+            }
+            return _context.StartOperation();
         }
 
         /// <summary>
-        /// Decrements the count, and cancels the command if the new count is <c>0</c>.
+        /// Called when the context has been cancelled.
         /// </summary>
-        private void Signal()
+        /// <param name="context">The context.</param>
+        private void Notify(RefCountedCancellationTokenSource context)
         {
-            if (--_count == 0)
-                Cancel();
-        }
-
-        /// <summary>
-        /// Increments the count, and resets the command if the old count was <c>0</c>.
-        /// </summary>
-        private void AddRef()
-        {
-            if (_count++ == 0)
-                Reset();
-        }
-
-        /// <summary>
-        /// Associates an operation with the cancelable command. The operation is disassociated when disposed.
-        /// </summary>
-        public IDisposable StartOperation()
-        {
-            return new SignalOnDispose(this);
+            if (_context != context)
+                return;
+            _context = null;
+            _canExecuteChanged.OnCanExecuteChanged();
         }
 
         /// <summary>
@@ -127,7 +88,7 @@ namespace Nito.Mvvm
                 {
                     try
                     {
-                        await executeAsync(parameter, CancellationToken);
+                        await executeAsync(parameter, _context.Token);
                     }
                     catch (OperationCanceledException)
                     {
@@ -147,16 +108,56 @@ namespace Nito.Mvvm
             return () => wrapped(null);
         }
 
-        private sealed class SignalOnDispose : SingleDisposable<CancelCommand>
+        private sealed class RefCountedCancellationTokenSource
         {
-            public SignalOnDispose(CancelCommand context) : base(context)
+            /// <summary>
+            /// The parent <see cref="CancelCommand"/>.
+            /// </summary>
+            private readonly CancelCommand _parent;
+
+            /// <summary>
+            /// The cancellation token source.
+            /// </summary>
+            private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+
+            /// <summary>
+            /// The number of current operations. If this is <c>0</c>, then the cts is canceled.
+            /// </summary>
+            private int _count;
+
+            public RefCountedCancellationTokenSource(CancelCommand parent)
             {
-                context.AddRef();
+                _parent = parent;
             }
 
-            protected override void Dispose(CancelCommand context)
+            public CancellationToken Token => _cts.Token;
+
+            /// <summary>
+            /// Decrements the count, and cancels the command if the new count is <c>0</c>.
+            /// </summary>
+            private void Signal()
             {
-                context.Signal();
+                if (--_count != 0)
+                    return;
+                Cancel();
+            }
+
+            /// <summary>
+            /// Associates an operation with the cts. The operation is disassociated when disposed.
+            /// </summary>
+            public IDisposable StartOperation()
+            {
+                ++_count;
+                return new AnonymousDisposable(Signal);
+            }
+
+            /// <summary>
+            /// Cancels the command immediately.
+            /// </summary>
+            public void Cancel()
+            {
+                _cts.Cancel();
+                _parent.Notify(this);
             }
         }
     }
