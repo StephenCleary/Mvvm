@@ -32,7 +32,7 @@ namespace UnitTests
             var ready = new TaskCompletionSource<object>();
             var release = new TaskCompletionSource<object>();
 
-            var task = command.WrapDelegate(async token =>
+            var task = command.Wrap(async token =>
             {
                 observedCancellationToken = token;
                 ready.SetResult(null);
@@ -65,7 +65,7 @@ namespace UnitTests
             var ready = new TaskCompletionSource<object>();
             var release = new TaskCompletionSource<object>();
 
-            var task = command.WrapDelegate(async token =>
+            var task = command.Wrap(async token =>
             {
                 observedCancellationToken = token;
                 ready.SetResult(null);
@@ -101,7 +101,7 @@ namespace UnitTests
             var ready = new TaskCompletionSource<object>();
             var release = new TaskCompletionSource<object>();
 
-            var task = command.WrapDelegate(async token =>
+            var task = command.Wrap(async token =>
             {
                 observedCancellationToken = token;
                 ready.SetResult(null);
@@ -132,13 +132,13 @@ namespace UnitTests
             var ready2 = new TaskCompletionSource<object>();
             var release2 = new TaskCompletionSource<object>();
 
-            var task1 = command.WrapDelegate(async token =>
+            var task1 = command.Wrap(async token =>
             {
                 observedCancellationToken1 = token;
                 ready1.SetResult(null);
                 await release1.Task;
             })();
-            var task2 = command.WrapDelegate(async token =>
+            var task2 = command.Wrap(async token =>
             {
                 observedCancellationToken2 = token;
                 ready2.SetResult(null);

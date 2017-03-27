@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -77,10 +78,41 @@ namespace Nito.Mvvm
         }
 
         /// <summary>
+        /// Cancels any current context.
+        /// </summary>
+        public void Cancel() => _context?.Cancel();
+
+        /// <summary>
+        /// Wraps a delegate so it cancels this cancel command and then registers with it. The delegate is passed the <see cref="CancellationToken"/> of this cancel command. Any <see cref="OperationCanceledException"/> exceptions raised by the delegate are silently ignored.
+        /// </summary>
+        public Func<object, Task> WrapCancel(Func<object, CancellationToken, Task> executeAsync)
+        {
+            var wrapped = Wrap(executeAsync);
+            return async parameter =>
+            {
+                Cancel();
+                await wrapped(parameter).ConfigureAwait(false);
+            };
+        }
+
+        /// <summary>
+        /// Wraps a delegate so it cancels this cancel command and then registers with it. The delegate is passed the <see cref="CancellationToken"/> of this cancel command. Any <see cref="OperationCanceledException"/> exceptions raised by the delegate are silently ignored.
+        /// </summary>
+        public Func<Task> WrapCancel(Func<CancellationToken, Task> executeAsync)
+        {
+            var wrapped = Wrap(executeAsync);
+            return async () =>
+            {
+                Cancel();
+                await wrapped().ConfigureAwait(false);
+            };
+        }
+
+        /// <summary>
         /// Wraps a delegate so that it registers with this cancel command. The delegate is passed the <see cref="CancellationToken"/> of this cancel command. Any <see cref="OperationCanceledException"/> exceptions raised by the delegate are silently ignored.
         /// </summary>
         /// <param name="executeAsync">The cancelable delegate.</param>
-        public Func<object, Task> WrapDelegate(Func<object, CancellationToken, Task> executeAsync)
+        public Func<object, Task> Wrap(Func<object, CancellationToken, Task> executeAsync)
         {
             return async parameter =>
             {
@@ -102,9 +134,9 @@ namespace Nito.Mvvm
         /// Wraps a delegate so that it registers with this cancel command. The delegate is passed the <see cref="CancellationToken"/> of this cancel command. Any <see cref="OperationCanceledException"/> exceptions raised by the delegate are silently ignored.
         /// </summary>
         /// <param name="executeAsync">The cancelable delegate.</param>
-        public Func<Task> WrapDelegate(Func<CancellationToken, Task> executeAsync)
+        public Func<Task> Wrap(Func<CancellationToken, Task> executeAsync)
         {
-            var wrapped = WrapDelegate((_, token) => executeAsync(token));
+            var wrapped = Wrap((_, token) => executeAsync(token));
             return () => wrapped(null);
         }
 
