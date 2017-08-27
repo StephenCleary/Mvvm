@@ -5,7 +5,7 @@
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>pre-01</VersionSuffix>
     <Authors>Stephen Cleary</Authors>
-    <TargetFrameworks>netstandard1.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0;netstandard2.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Nito.Mvvm.Async</AssemblyName>
@@ -15,16 +15,19 @@
     <PackageLicenseUrl>https://raw.githubusercontent.com/StephenCleary/Mvvm.Async/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/StephenCleary/Mvvm.Async.git</RepositoryUrl>
+    <PublicSign>True</PublicSign>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.0|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nito.Mvvm.Core" Version="1.2.0" />
-    <PackageReference Include="Nito.Disposables" Version="1.1.0" />
+    <PackageReference Include="Nito.Mvvm.Core" Version="1.2.1" />
+    <PackageReference Include="Nito.Disposables" Version="1.2.2" />
   </ItemGroup>
 
 </Project>
