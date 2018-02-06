@@ -20,9 +20,13 @@ namespace Nito.Mvvm
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
         /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
-        public CustomAsyncCommand(Func<object, Task> executeAsync, Func<object, bool> canExecute, Func<object, ICanExecuteChanged> canExecuteChangedFactory)
+        public CustomAsyncCommand(
+            Func<object, Task> executeAsync,
+            Func<object, bool> canExecute,
+            Func<object, ICanExecuteChanged> canExecuteChangedFactory)
             : base(executeAsync, canExecuteChangedFactory)
         {
+            _canExecute = canExecute;
         }
 
         /// <summary>
@@ -41,7 +45,10 @@ namespace Nito.Mvvm
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
         /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
-        public CustomAsyncCommand(Func<Task> executeAsync, Func<bool> canExecute, Func<object, ICanExecuteChanged> canExecuteChangedFactory)
+        public CustomAsyncCommand(
+            Func<Task> executeAsync,
+            Func<bool> canExecute,
+            Func<object, ICanExecuteChanged> canExecuteChangedFactory)
             : this(_ => executeAsync(), _ => canExecute(), canExecuteChangedFactory)
         {
         }
