@@ -8,15 +8,15 @@
     /// <summary>
     /// A basic asynchronous command with ability to cancel itself, which (by default) is disabled while the command is executing.
     /// </summary>
-    public class CancellableAsyncCommand : AsyncCommand, ICancellable
+    public class CancellableAsyncCommandAsyncCommand : AsyncCommand, ICancellableAsyncCommand
     {
         /// <summary>
-        /// Command to cancel corresponding <see cref="CancellableAsyncCommand"/>
+        /// Command to cancel corresponding <see cref="CancellableAsyncCommandAsyncCommand"/>
         /// </summary>
         public CancelCommand CancelCommand { get; } = new CancelCommand();
 
         /// <summary>
-        /// Method for cancelling corresponding <see cref="CancellableAsyncCommand"/>
+        /// Method for cancelling corresponding <see cref="CancellableAsyncCommandAsyncCommand"/>
         /// </summary>
         public void Cancel() => CancelCommand.Cancel();
 
@@ -25,7 +25,7 @@
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
-        public CancellableAsyncCommand(
+        public CancellableAsyncCommandAsyncCommand(
             Func<object, CancellationToken, Task> executeAsync,
             Func<object, ICanExecuteChanged> canExecuteChangedFactory)
             : base(_ => TaskExt.CompletedTask, canExecuteChangedFactory) =>
@@ -35,7 +35,7 @@
         /// Creates a new asynchronous cancellable command, with the specified asynchronous delegate as its implementation.
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
-        public CancellableAsyncCommand(Func<object, CancellationToken, Task> executeAsync)
+        public CancellableAsyncCommandAsyncCommand(Func<object, CancellationToken, Task> executeAsync)
             : base(_ => TaskExt.CompletedTask) =>
             SetExecutingFunc(CancelCommand.Wrap(executeAsync));
 
@@ -44,7 +44,7 @@
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
-        public CancellableAsyncCommand(
+        public CancellableAsyncCommandAsyncCommand(
             Func<CancellationToken, Task> executeAsync,
             Func<object, ICanExecuteChanged> canExecuteChangedFactory)
             : base(() => TaskExt.CompletedTask, canExecuteChangedFactory) =>
@@ -54,7 +54,7 @@
         /// Creates a new asynchronous cancellable command, with the specified asynchronous delegate as its implementation.
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
-        public CancellableAsyncCommand(Func<CancellationToken, Task> executeAsync)
+        public CancellableAsyncCommandAsyncCommand(Func<CancellationToken, Task> executeAsync)
             : base(() => TaskExt.CompletedTask) =>
             SetExecutingFunc(CancelCommand.Wrap(executeAsync));
     }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Contract for cancellable asynchronous command
     /// </summary>
-    public interface ICancellable
+    public interface ICancellableAsyncCommand : IAsyncCommand
     {
         /// <summary>
         /// Command to cancel corresponding <see cref="IAsyncCommand"/>
