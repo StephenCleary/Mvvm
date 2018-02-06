@@ -8,15 +8,15 @@
     /// <summary>
     /// An asynchronous command with ability to cancel itself where the user determines when it can execute.
     /// </summary>
-    public class CancellableAsyncCommandCustomAsyncCommand : CustomAsyncCommand, ICancellableAsyncCommand
+    public class CancellableAsyncCommandCustom : CustomAsyncCommand, ICancellableAsyncCommand
     {
         /// <summary>
-        /// Command to cancel corresponding <see cref="CancellableAsyncCommandCustomAsyncCommand"/>
+        /// Command to cancel corresponding <see cref="CancellableAsyncCommandCustom"/>
         /// </summary>
         public CancelCommand CancelCommand { get; } = new CancelCommand();
 
         /// <summary>
-        /// Method for cancelling corresponding <see cref="CancellableAsyncCommandCustomAsyncCommand"/>
+        /// Method for cancelling corresponding <see cref="CancellableAsyncCommandCustom"/>
         /// </summary>
         public void Cancel() => CancelCommand.Cancel();
 
@@ -26,7 +26,7 @@
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
         /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
-        public CancellableAsyncCommandCustomAsyncCommand(
+        public CancellableAsyncCommandCustom(
             Func<object, CancellationToken, Task> executeAsync,
             Func<object, bool> canExecute,
             Func<object, ICanExecuteChanged> canExecuteChangedFactory)
@@ -38,7 +38,7 @@
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
-        public CancellableAsyncCommandCustomAsyncCommand(
+        public CancellableAsyncCommandCustom(
             Func<object, CancellationToken, Task> executeAsync,
             Func<object, bool> canExecute)
             : base(_ => TaskExt.CompletedTask, canExecute) =>
@@ -50,7 +50,7 @@
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
         /// <param name="canExecuteChangedFactory">The factory for the implementation of <see cref="ICommand.CanExecuteChanged"/>.</param>
-        public CancellableAsyncCommandCustomAsyncCommand(
+        public CancellableAsyncCommandCustom(
             Func<CancellationToken, Task> executeAsync,
             Func<bool> canExecute,
             Func<object, ICanExecuteChanged> canExecuteChangedFactory)
@@ -62,7 +62,7 @@
         /// </summary>
         /// <param name="executeAsync">The implementation of <see cref="IAsyncCommand.ExecuteAsync(object)"/>.</param>
         /// <param name="canExecute">The implementation of <see cref="ICommand.CanExecute(object)"/>.</param>
-        public CancellableAsyncCommandCustomAsyncCommand(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute)
+        public CancellableAsyncCommandCustom(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute)
             : base(() => TaskExt.CompletedTask, canExecute) =>
             SetExecutingFunc(CancelCommand.Wrap(executeAsync));
     }
