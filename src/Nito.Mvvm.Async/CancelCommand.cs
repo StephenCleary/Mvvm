@@ -118,14 +118,7 @@ namespace Nito.Mvvm
             {
                 using (StartOperation())
                 {
-                    try
-                    {
-                        await executeAsync(parameter, _context.Token);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // We cannot use `when (ex.CancellationToken == cancellationToken)` on the catch block because the user delegate may be cancelled by a linked CancellationToken.
-                    }
+                    await executeAsync(parameter, _context.Token);
                 }
             };
         }
