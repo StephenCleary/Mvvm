@@ -88,7 +88,6 @@ namespace Nito.Mvvm
             await Execution.TaskCompleted;
             OnCanExecuteChanged();
             PropertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
-            await Execution.Task;
         }
 
         /// <summary>
