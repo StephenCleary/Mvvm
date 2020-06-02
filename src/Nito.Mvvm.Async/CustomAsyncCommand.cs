@@ -96,7 +96,6 @@ namespace Nito.Mvvm
             tcs.SetResult(null);
             await Execution.TaskCompleted;
             PropertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
-            await Execution.Task;
         }
 
         /// <summary>
