@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# CA1033: Interface methods should be callable by child types
+dotnet_diagnostic.CA1033.severity = none
+
+# CA2007: Consider calling ConfigureAwait on the awaited task
+dotnet_diagnostic.CA2007.severity = none

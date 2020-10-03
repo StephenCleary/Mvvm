@@ -25,8 +25,11 @@ namespace Nito.Mvvm
             {
                 await task;
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch
+#pragma warning restore CA1031 // Do not catch general exception types
             {
+                // Ignore exceptions
             }
             finally
             {
@@ -42,24 +45,24 @@ namespace Nito.Mvvm
 
             if (task.IsCanceled)
             {
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Status"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsCanceled"));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Status)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsCanceled)));
             }
             else if (task.IsFaulted)
             {
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Exception"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("InnerException"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("ErrorMessage"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Status"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsFaulted"));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Exception)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(InnerException)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(ErrorMessage)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Status)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsFaulted)));
             }
             else
             {
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Status"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsSuccessfullyCompleted"));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Status)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsSuccessfullyCompleted)));
             }
-            propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsCompleted"));
-            propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsNotCompleted"));
+            propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsCompleted)));
+            propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsNotCompleted)));
         }
 
         /// <summary>
@@ -105,22 +108,22 @@ namespace Nito.Mvvm
         /// <summary>
         /// Gets the wrapped faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public AggregateException Exception { get { return Task.Exception; } }
+        public AggregateException? Exception { get { return Task.Exception; } }
 
         /// <summary>
         /// Gets the original faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public Exception InnerException { get { return (Exception == null) ? null : Exception.InnerException; } }
+        public Exception? InnerException { get { return (Exception == null) ? null : Exception.InnerException; } }
 
         /// <summary>
         /// Gets the error message for the original faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public string ErrorMessage { get { return (InnerException == null) ? null : InnerException.Message; } }
+        public string? ErrorMessage { get { return (InnerException == null) ? null : InnerException.Message; } }
 
         /// <summary>
         /// Event that notifies listeners of property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Creates a new task notifier watching the specified task.
@@ -148,6 +151,7 @@ namespace Nito.Mvvm
         /// <param name="asyncAction">The asynchronous code to execute.</param>
         public static NotifyTask Create(Func<Task> asyncAction)
         {
+            _ = asyncAction ?? throw new ArgumentNullException(nameof(asyncAction));
             return Create(asyncAction());
         }
 
@@ -158,6 +162,7 @@ namespace Nito.Mvvm
         /// <param name="defaultResult">The default "result" value for the task while it is not yet complete.</param>
         public static NotifyTask<TResult> Create<TResult>(Func<Task<TResult>> asyncAction, TResult defaultResult = default(TResult))
         {
+            _ = asyncAction ?? throw new ArgumentNullException(nameof(asyncAction));
             return Create(asyncAction(), defaultResult);
         }
     }
@@ -191,8 +196,11 @@ namespace Nito.Mvvm
             {
                 await task;
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch
+#pragma warning restore CA1031 // Do not catch general exception types
             {
+                // Ignore exceptions.
             }
             finally
             {
@@ -208,25 +216,25 @@ namespace Nito.Mvvm
 
             if (task.IsCanceled)
             {
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Status"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsCanceled"));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Status)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsCanceled)));
             }
             else if (task.IsFaulted)
             {
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Exception"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("InnerException"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("ErrorMessage"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Status"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsFaulted"));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Exception)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(InnerException)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(ErrorMessage)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Status)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsFaulted)));
             }
             else
             {
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Result"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("Status"));
-                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsSuccessfullyCompleted"));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Result)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Status)));
+                propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsSuccessfullyCompleted)));
             }
-            propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsCompleted"));
-            propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get("IsNotCompleted"));
+            propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsCompleted)));
+            propertyChanged(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsNotCompleted)));
         }
 
         /// <summary>
@@ -277,21 +285,21 @@ namespace Nito.Mvvm
         /// <summary>
         /// Gets the wrapped faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public AggregateException Exception { get { return Task.Exception; } }
+        public AggregateException? Exception { get { return Task.Exception; } }
 
         /// <summary>
         /// Gets the original faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public Exception InnerException { get { return (Exception == null) ? null : Exception.InnerException; } }
+        public Exception? InnerException { get { return (Exception == null) ? null : Exception.InnerException; } }
 
         /// <summary>
         /// Gets the error message for the original faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public string ErrorMessage { get { return (InnerException == null) ? null : InnerException.Message; } }
+        public string? ErrorMessage { get { return (InnerException == null) ? null : InnerException.Message; } }
 
         /// <summary>
         /// Event that notifies listeners of property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

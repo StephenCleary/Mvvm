@@ -67,7 +67,7 @@ namespace Nito.Mvvm
         /// <summary>
         /// Represents the most recent execution of the asynchronous command. Returns <c>null</c> until the first execution of this command.
         /// </summary>
-        public NotifyTask Execution { get; private set; }
+        public NotifyTask? Execution { get; private set; }
 
         /// <summary>
         /// Whether the asynchronous command is currently executing.
@@ -91,18 +91,18 @@ namespace Nito.Mvvm
             var tcs = new TaskCompletionSource<object>();
             Execution = NotifyTask.Create(DoExecuteAsync(tcs.Task, _executeAsync, parameter));
             var propertyChanged = PropertyChanged;
-            propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("Execution"));
-            propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
-            tcs.SetResult(null);
+            propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get(nameof(Execution)));
+            propertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsExecuting)));
+            tcs.SetResult(null!);
             await Execution.TaskCompleted;
-            PropertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get("IsExecuting"));
+            PropertyChanged?.Invoke(this, PropertyChangedEventArgsCache.Instance.Get(nameof(IsExecuting)));
             await Execution.Task;
         }
 
         /// <summary>
         /// Raised when any properties on this instance have changed.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// The implementation of <see cref="ICommand.CanExecute(object)"/>. Invokes the <c>canExecute</c> delegate that was passed to the constructor.

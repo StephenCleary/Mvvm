@@ -4,22 +4,8 @@
     <Description>Asynchronous helper types for MVVM applications.</Description>
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>pre-03</VersionSuffix>
-    <Authors>Stephen Cleary</Authors>
     <TargetFrameworks>netstandard1.0;netstandard2.0</TargetFrameworks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Nito.Mvvm.Async</AssemblyName>
-    <PackageId>Nito.Mvvm.Async</PackageId>
     <PackageTags>async;mvvm</PackageTags>
-    <PackageProjectUrl>https://github.com/StephenCleary/Mvvm.Async</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/StephenCleary/Mvvm.Async/master/LICENSE</PackageLicenseUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/StephenCleary/Mvvm.Async.git</RepositoryUrl>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

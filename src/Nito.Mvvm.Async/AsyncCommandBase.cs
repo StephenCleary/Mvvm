@@ -19,6 +19,7 @@ namespace Nito.Mvvm
         /// </summary>
         protected AsyncCommandBase(Func<object, ICanExecuteChanged> canExecuteChangedFactory)
         {
+            _ = canExecuteChangedFactory ?? throw new ArgumentNullException(nameof(canExecuteChangedFactory));
             _canExecuteChanged = canExecuteChangedFactory(this);
         }
 
