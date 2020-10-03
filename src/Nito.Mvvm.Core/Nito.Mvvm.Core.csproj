@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Basic helper types for MVVM applications.</Description>
+    <Authors>Stephen Cleary</Authors>
+    <TargetFrameworks>netstandard1.0;netstandard2.0</TargetFrameworks>
+    <PackageTags>mvvm;inotifypropertychanged;icommand;canexecute</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nito.Disposables" Version="2.2.0" />
+  </ItemGroup>
+
+</Project>

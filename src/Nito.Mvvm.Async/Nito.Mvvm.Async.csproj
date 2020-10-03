@@ -9,8 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nito.Mvvm.Core" Version="1.2.2" />
-    <PackageReference Include="Nito.Disposables" Version="1.2.3" />
+    <PackageReference Include="Nito.Disposables" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nito.Mvvm.Core\Nito.Mvvm.Core.csproj" />
   </ItemGroup>
 
 </Project>
