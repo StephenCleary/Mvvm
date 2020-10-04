@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D3644E3B-A75
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A7638A69-87EF-46D7-90E1-C574751681E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nito.Mvvm.Async", "src\Nito.Mvvm.Async\Nito.Mvvm.Async.csproj", "{DF370AF0-2154-4F19-830E-E1B7D182B820}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Async.UnitTests", "test\Async.UnitTests\Async.UnitTests.csproj", "{363E6A9D-D07C-40B5-B726-91014261BA33}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nito.Mvvm.Core", "src\Nito.Mvvm.Core\Nito.Mvvm.Core.csproj", "{6D77F11C-2496-46F3-8766-75BEFC7B9109}"
@@ -19,16 +17,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nito.Mvvm.CalculatedPropert
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalculatedProperties.UnitTests", "test\CalculatedProperties.UnitTests\CalculatedProperties.UnitTests.csproj", "{1A0D7509-688B-4D3F-ACB8-B7E3891798F9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nito.Mvvm.Async", "future\Nito.Mvvm.Async\Nito.Mvvm.Async.csproj", "{E55E13D3-5D42-4536-AD16-0FEDC5BF28F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DF370AF0-2154-4F19-830E-E1B7D182B820}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF370AF0-2154-4F19-830E-E1B7D182B820}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF370AF0-2154-4F19-830E-E1B7D182B820}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF370AF0-2154-4F19-830E-E1B7D182B820}.Release|Any CPU.Build.0 = Release|Any CPU
 		{363E6A9D-D07C-40B5-B726-91014261BA33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{363E6A9D-D07C-40B5-B726-91014261BA33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{363E6A9D-D07C-40B5-B726-91014261BA33}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,17 +45,21 @@ Global
 		{1A0D7509-688B-4D3F-ACB8-B7E3891798F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A0D7509-688B-4D3F-ACB8-B7E3891798F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A0D7509-688B-4D3F-ACB8-B7E3891798F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E55E13D3-5D42-4536-AD16-0FEDC5BF28F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E55E13D3-5D42-4536-AD16-0FEDC5BF28F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E55E13D3-5D42-4536-AD16-0FEDC5BF28F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E55E13D3-5D42-4536-AD16-0FEDC5BF28F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{DF370AF0-2154-4F19-830E-E1B7D182B820} = {D3644E3B-A755-4F8E-8211-E06B0F130C53}
 		{363E6A9D-D07C-40B5-B726-91014261BA33} = {A7638A69-87EF-46D7-90E1-C574751681E7}
 		{6D77F11C-2496-46F3-8766-75BEFC7B9109} = {D3644E3B-A755-4F8E-8211-E06B0F130C53}
 		{619721A1-C065-4756-ADBE-A9A2EE6C1DCE} = {A7638A69-87EF-46D7-90E1-C574751681E7}
 		{D963528A-6B3E-4A9E-B247-AED9FE422D7A} = {D3644E3B-A755-4F8E-8211-E06B0F130C53}
 		{1A0D7509-688B-4D3F-ACB8-B7E3891798F9} = {A7638A69-87EF-46D7-90E1-C574751681E7}
+		{E55E13D3-5D42-4536-AD16-0FEDC5BF28F8} = {D3644E3B-A755-4F8E-8211-E06B0F130C53}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BCF7613D-973A-464D-95B5-D5CA93D3D089}

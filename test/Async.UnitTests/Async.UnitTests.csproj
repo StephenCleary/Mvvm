@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Nito.Mvvm.Async\Nito.Mvvm.Async.csproj" />
+    <ProjectReference Include="..\..\future\Nito.Mvvm.Async\Nito.Mvvm.Async.csproj" />
   </ItemGroup>
 
 </Project>
