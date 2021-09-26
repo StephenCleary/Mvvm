@@ -3,13 +3,13 @@
   <PropertyGroup>
     <Description>Asynchronous helper types for MVVM applications.</Description>
     <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>pre-03</VersionSuffix>
-    <TargetFrameworks>netstandard1.0;netstandard2.0</TargetFrameworks>
+    <VersionSuffix>pre-04</VersionSuffix>
+    <TargetFrameworks>netstandard1.0;netstandard2.0;net461</TargetFrameworks>
     <PackageTags>async;mvvm</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nito.Disposables" Version="2.2.0" />
+    <PackageReference Include="Nito.Disposables" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
