@@ -140,7 +140,7 @@ namespace Nito.Mvvm
         /// <typeparam name="TResult">The type of the task result.</typeparam>
         /// <param name="task">The task to watch.</param>
         /// <param name="defaultResult">The default "result" value for the task while it is not yet complete.</param>
-        public static NotifyTask<TResult> Create<TResult>(Task<TResult> task, TResult defaultResult = default(TResult))
+        public static NotifyTask<TResult> Create<TResult>(Task<TResult> task, TResult defaultResult = default!)
         {
             return new NotifyTask<TResult>(task, defaultResult);
         }
@@ -160,7 +160,7 @@ namespace Nito.Mvvm
         /// </summary>
         /// <param name="asyncAction">The asynchronous code to execute.</param>
         /// <param name="defaultResult">The default "result" value for the task while it is not yet complete.</param>
-        public static NotifyTask<TResult> Create<TResult>(Func<Task<TResult>> asyncAction, TResult defaultResult = default(TResult))
+        public static NotifyTask<TResult> Create<TResult>(Func<Task<TResult>> asyncAction, TResult defaultResult = default!)
         {
             _ = asyncAction ?? throw new ArgumentNullException(nameof(asyncAction));
             return Create(asyncAction(), defaultResult);

@@ -25,7 +25,7 @@ namespace Nito.Mvvm.CalculatedProperties
         /// <param name="onPropertyChanged">A method that raises <see cref="INotifyPropertyChanged.PropertyChanged"/>.</param>
         /// <param name="initialValue">The optional initial value of the property.</param>
         /// <param name="comparer">The optional comparer used to determine when the value of the property has changed.</param>
-        public TriggerProperty(Action<PropertyChangedEventArgs> onPropertyChanged, T initialValue = default, IEqualityComparer<T>? comparer = null)
+        public TriggerProperty(Action<PropertyChangedEventArgs> onPropertyChanged, T initialValue = default!, IEqualityComparer<T>? comparer = null)
         {
             _sourceProperty = new SourceProperty(onPropertyChanged);
             _comparer = comparer ?? EqualityComparer<T>.Default;
