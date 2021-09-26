@@ -68,57 +68,57 @@ namespace Nito.Mvvm
         /// <summary>
         /// Gets the task being watched. This property never changes and is never <c>null</c>.
         /// </summary>
-        public Task Task { get; private set; }
+        public Task Task { get; }
 
         /// <summary>
         /// Gets a task that completes successfully when <see cref="Task"/> completes (successfully, faulted, or canceled). This property never changes and is never <c>null</c>.
         /// </summary>
-        public Task TaskCompleted { get; private set; }
+        public Task TaskCompleted { get; }
 
         /// <summary>
         /// Gets the current task status. This property raises a notification when the task completes.
         /// </summary>
-        public TaskStatus Status { get { return Task.Status; } }
+        public TaskStatus Status => Task.Status;
 
         /// <summary>
         /// Gets whether the task has completed. This property raises a notification when the value changes to <c>true</c>.
         /// </summary>
-        public bool IsCompleted { get { return Task.IsCompleted; } }
+        public bool IsCompleted => Task.IsCompleted;
 
         /// <summary>
         /// Gets whether the task is busy (not completed). This property raises a notification when the value changes to <c>false</c>.
         /// </summary>
-        public bool IsNotCompleted { get { return !Task.IsCompleted; } }
+        public bool IsNotCompleted => !Task.IsCompleted;
 
         /// <summary>
         /// Gets whether the task has completed successfully. This property raises a notification when the value changes to <c>true</c>.
         /// </summary>
-        public bool IsSuccessfullyCompleted { get { return Task.Status == TaskStatus.RanToCompletion; } }
+        public bool IsSuccessfullyCompleted => Task.Status == TaskStatus.RanToCompletion;
 
         /// <summary>
         /// Gets whether the task has been canceled. This property raises a notification only if the task is canceled (i.e., if the value changes to <c>true</c>).
         /// </summary>
-        public bool IsCanceled { get { return Task.IsCanceled; } }
+        public bool IsCanceled => Task.IsCanceled;
 
         /// <summary>
         /// Gets whether the task has faulted. This property raises a notification only if the task faults (i.e., if the value changes to <c>true</c>).
         /// </summary>
-        public bool IsFaulted { get { return Task.IsFaulted; } }
+        public bool IsFaulted => Task.IsFaulted;
 
         /// <summary>
         /// Gets the wrapped faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public AggregateException? Exception { get { return Task.Exception; } }
+        public AggregateException? Exception => Task.Exception;
 
         /// <summary>
         /// Gets the original faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public Exception? InnerException { get { return (Exception == null) ? null : Exception.InnerException; } }
+        public Exception? InnerException => Exception?.InnerException;
 
         /// <summary>
         /// Gets the error message for the original faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public string? ErrorMessage { get { return (InnerException == null) ? null : InnerException.Message; } }
+        public string? ErrorMessage => InnerException?.Message;
 
         /// <summary>
         /// Event that notifies listeners of property value changes.
@@ -131,7 +131,7 @@ namespace Nito.Mvvm
         /// <param name="task">The task to watch.</param>
         public static NotifyTask Create(Task task)
         {
-            return new NotifyTask(task);
+            return new(task);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace Nito.Mvvm
         /// <param name="defaultResult">The default "result" value for the task while it is not yet complete.</param>
         public static NotifyTask<TResult> Create<TResult>(Task<TResult> task, TResult defaultResult = default!)
         {
-            return new NotifyTask<TResult>(task, defaultResult);
+            return new(task, defaultResult);
         }
 
         /// <summary>
@@ -240,62 +240,62 @@ namespace Nito.Mvvm
         /// <summary>
         /// Gets the task being watched. This property never changes and is never <c>null</c>.
         /// </summary>
-        public Task<TResult> Task { get; private set; }
+        public Task<TResult> Task { get; }
 
         /// <summary>
         /// Gets a task that completes successfully when <see cref="Task"/> completes (successfully, faulted, or canceled). This property never changes and is never <c>null</c>.
         /// </summary>
-        public Task TaskCompleted { get; private set; }
+        public Task TaskCompleted { get; }
 
         /// <summary>
         /// Gets the result of the task. Returns the "default result" value specified in the constructor if the task has not yet completed successfully. This property raises a notification when the task completes successfully.
         /// </summary>
-        public TResult Result { get { return (Task.Status == TaskStatus.RanToCompletion) ? Task.Result : _defaultResult; } }
+        public TResult Result => (Task.Status == TaskStatus.RanToCompletion) ? Task.Result : _defaultResult;
 
         /// <summary>
         /// Gets the current task status. This property raises a notification when the task completes.
         /// </summary>
-        public TaskStatus Status { get { return Task.Status; } }
+        public TaskStatus Status => Task.Status;
 
         /// <summary>
         /// Gets whether the task has completed. This property raises a notification when the value changes to <c>true</c>.
         /// </summary>
-        public bool IsCompleted { get { return Task.IsCompleted; } }
+        public bool IsCompleted => Task.IsCompleted;
 
         /// <summary>
         /// Gets whether the task is busy (not completed). This property raises a notification when the value changes to <c>false</c>.
         /// </summary>
-        public bool IsNotCompleted { get { return !Task.IsCompleted; } }
+        public bool IsNotCompleted => !Task.IsCompleted;
 
         /// <summary>
         /// Gets whether the task has completed successfully. This property raises a notification when the value changes to <c>true</c>.
         /// </summary>
-        public bool IsSuccessfullyCompleted { get { return Task.Status == TaskStatus.RanToCompletion; } }
+        public bool IsSuccessfullyCompleted => Task.Status == TaskStatus.RanToCompletion;
 
         /// <summary>
         /// Gets whether the task has been canceled. This property raises a notification only if the task is canceled (i.e., if the value changes to <c>true</c>).
         /// </summary>
-        public bool IsCanceled { get { return Task.IsCanceled; } }
+        public bool IsCanceled => Task.IsCanceled;
 
         /// <summary>
         /// Gets whether the task has faulted. This property raises a notification only if the task faults (i.e., if the value changes to <c>true</c>).
         /// </summary>
-        public bool IsFaulted { get { return Task.IsFaulted; } }
+        public bool IsFaulted => Task.IsFaulted;
 
         /// <summary>
         /// Gets the wrapped faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public AggregateException? Exception { get { return Task.Exception; } }
+        public AggregateException? Exception => Task.Exception;
 
         /// <summary>
         /// Gets the original faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public Exception? InnerException { get { return (Exception == null) ? null : Exception.InnerException; } }
+        public Exception? InnerException => Exception?.InnerException;
 
         /// <summary>
         /// Gets the error message for the original faulting exception for the task. Returns <c>null</c> if the task is not faulted. This property raises a notification only if the task faults (i.e., if the value changes to non-<c>null</c>).
         /// </summary>
-        public string? ErrorMessage { get { return (InnerException == null) ? null : InnerException.Message; } }
+        public string? ErrorMessage => InnerException?.Message;
 
         /// <summary>
         /// Event that notifies listeners of property value changes.
