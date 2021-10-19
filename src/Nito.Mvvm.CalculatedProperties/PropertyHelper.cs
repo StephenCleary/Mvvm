@@ -35,14 +35,7 @@ namespace Nito.Mvvm.CalculatedProperties
         /// <param name="propertyName">The name of the property to retrieve or create.</param>
         public TriggerProperty<T> GetOrAddTriggerProperty<T>(Func<T>? calculateInitialValue = null, IEqualityComparer<T>? comparer = null, [CallerMemberName] string propertyName = null!)
         {
-            IProperty result;
-            if (!_properties.TryGetValue(propertyName, out result))
-            {
-                result = new TriggerProperty<T>(_onPropertyChanged, calculateInitialValue == null ? default! : calculateInitialValue(), comparer);
-                _properties.Add(propertyName, result);
-            }
-
-            return (TriggerProperty<T>) result;
+            return GetTriggerProperty<T>(propertyName) ?? AddTriggerProperty(calculateInitialValue, comparer, propertyName);
         }
 
         /// <summary>
@@ -53,14 +46,7 @@ namespace Nito.Mvvm.CalculatedProperties
         /// <param name="propertyName">The name of the property to retrieve or create.</param>
         public CalculatedProperty<T> GetOrAddCalculatedProperty<T>(Func<T> calculateValue, [CallerMemberName] string propertyName = null!)
         {
-            IProperty result;
-            if (!_properties.TryGetValue(propertyName, out result))
-            {
-                result = new CalculatedProperty<T>(_onPropertyChanged, calculateValue);
-                _properties.Add(propertyName, result);
-            }
-
-            return (CalculatedProperty<T>) result;
+            return GetCalculatedProperty<T>(propertyName) ?? AddCalculatedProperty(calculateValue, propertyName);
         }
 
         /// <summary>
@@ -68,7 +54,7 @@ namespace Nito.Mvvm.CalculatedProperties
         /// </summary>
         /// <typeparam name="T">The type of the property value.</typeparam>
         /// <param name="propertyName">The name of the property to retrieve.</param>
-        public TriggerProperty<T> GetTriggerProperty<T>(string propertyName)
+        public TriggerProperty<T>? GetTriggerProperty<T>(string propertyName)
         {
             IProperty result;
             _properties.TryGetValue(propertyName, out result);
@@ -80,7 +66,7 @@ namespace Nito.Mvvm.CalculatedProperties
         /// </summary>
         /// <typeparam name="T">The type of the property value.</typeparam>
         /// <param name="propertyName">The name of the property to retrieve.</param>
-        public CalculatedProperty<T> GetCalculatedProperty<T>(string propertyName)
+        public CalculatedProperty<T>? GetCalculatedProperty<T>(string propertyName)
         {
             IProperty result;
             _properties.TryGetValue(propertyName, out result);
@@ -108,7 +94,13 @@ namespace Nito.Mvvm.CalculatedProperties
         /// <param name="propertyName">The name of the property.</param>
         public T Get<T>(T initialValue, IEqualityComparer<T>? comparer = null, [CallerMemberName] string propertyName = null!)
         {
-            return Get(() => initialValue, comparer, propertyName);
+            var triggerProperty = GetTriggerProperty<T>(propertyName);
+            if (triggerProperty == null)
+            {
+                var initialValueCopy = initialValue;
+                triggerProperty = AddTriggerProperty(() => initialValueCopy, comparer, propertyName);
+            }
+            return triggerProperty.GetValue(propertyName);
         }
 
         /// <summary>
@@ -120,7 +112,13 @@ namespace Nito.Mvvm.CalculatedProperties
         /// <param name="propertyName">The name of the property.</param>
         public void Set<T>(T value, IEqualityComparer<T>? comparer = null, [CallerMemberName] string propertyName = null!)
         {
-            GetOrAddTriggerProperty(() => value, comparer, propertyName).SetValue(value, propertyName);
+            var triggerProperty = GetTriggerProperty<T>(propertyName);
+            if (triggerProperty == null)
+            {
+                var valueCopy = value;
+                triggerProperty = AddTriggerProperty(() => valueCopy, comparer, propertyName);
+            }
+            triggerProperty.SetValue(value, propertyName);
         }
 
         /// <summary>
@@ -132,6 +130,20 @@ namespace Nito.Mvvm.CalculatedProperties
         public T Calculated<T>(Func<T> calculateValue, [CallerMemberName] string propertyName = null!)
         {
             return GetOrAddCalculatedProperty(calculateValue, propertyName).GetValue(propertyName);
+        }
+
+        private TriggerProperty<T> AddTriggerProperty<T>(Func<T>? calculateInitialValue, IEqualityComparer<T>? comparer, string propertyName)
+        {
+            TriggerProperty<T> result = new TriggerProperty<T>(_onPropertyChanged, calculateInitialValue == null ? default! : calculateInitialValue(), comparer);
+            _properties.Add(propertyName, result);
+            return result;
+        }
+
+        private CalculatedProperty<T> AddCalculatedProperty<T>(Func<T> calculateValue, string propertyName)
+        {
+            CalculatedProperty<T> result = new CalculatedProperty<T>(_onPropertyChanged, calculateValue);
+            _properties.Add(propertyName, result);
+            return result;
         }
 
         [DebuggerNonUserCode]
