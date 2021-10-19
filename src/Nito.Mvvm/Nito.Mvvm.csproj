@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>MVVM helper types.</Description>
-    <TargetFrameworks>netstandard1.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0;netstandard2.0;net461</TargetFrameworks>
     <PackageTags>mvvm;inotifypropertychanged;icommand;canexecute;calculated;properties</PackageTags>
     <IsMetapackage>true</IsMetapackage>
   </PropertyGroup>

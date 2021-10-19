@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
     <Authors>Stephen Cleary</Authors>
-    <VersionPrefix>1.3.0</VersionPrefix>
+    <VersionPrefix>1.3.1</VersionPrefix>
   </PropertyGroup>
 </Project>
